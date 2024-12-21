@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MikanOS作成ログ</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+  </head>
+  <body>
+  <section class="section">
+    <div class="container">
+      <h1 class="title is-size-3">
+        MikanOS作成日記
+      </h1>
+      <p class="is-size-t">環境構築(ここまでに10日くらいかかってる）<br>
+        環境構築は<a href="https://zenn.dev/karaage0703/articles/1bdb8930182c6c">この記事</a>を<br>
+        参考にしたらできたが、一章の1.4のところで少し躓いた。<br>
+        そのため、GPTに聞いていった結果、cd ~/osbook/day01/binをした後にDISPLAY環境変数が変わっていることに気づいた。
+        そして、cd ~/osbook/day01/binした後にDISPLAY環境変数を再設定した後、xhost +を実行(ここはXQuartzを起動するたびに必要)<br>
+        した後、qemu-system-x86_64 \
+        -drive if=pflash,format=raw,file=$HOME/osbook/devenv/OVMF_CODE.fd \<br>
+        -drive if=pflash,format=raw,file=$HOME/osbook/devenv/OVMF_VARS.fd \<br>
+        -hda ~/osbook/day01/bin/disk.imgを実行したら動いた。</p>
+    </div>
+  </section>
+  </body>
+</html>
