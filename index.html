@@ -9,18 +9,40 @@
   <body>
   <section class="section">
     <div class="container">
-      <h1 class="title is-size-3">
-        MikanOS作成日記
+      <h1 class="title is-size-1">
+        MikanOS作成日記（mac book air M1 2020モデル)
       </h1>
-      <p class="is-size-t">環境構築(ここまでに10日くらいかかってる）<br>
-        環境構築は<a href="https://zenn.dev/karaage0703/articles/1bdb8930182c6c">この記事</a>を<br>
+      <p class="is-size-3">０日目：環境構築(ここまでに10日くらいかかってる)</p>
+       <p class="is-size-5"> 環境構築は<a href="https://zenn.dev/karaage0703/articles/1bdb8930182c6c">この記事</a>を<br>
         参考にしたらできたが、一章の1.4のところで少し躓いた。<br>
-        そのため、GPTに聞いていった結果、cd ~/osbook/day01/binをした後にDISPLAY環境変数が変わっていることに気づいた。
-        そして、cd ~/osbook/day01/binした後にDISPLAY環境変数を再設定した後、xhost +を実行(ここはXQuartzを起動するたびに必要)<br>
-        した後、qemu-system-x86_64 \
+        そのため、GPTに聞いていった結果、<code>$ cd ~/osbook/day01/bin</code>をした後にDISPLAY環境変数が変わっていることに気づいた。
+        そして、<code>cd ~/osbook/day01/bin</code>した後にDISPLAY環境変数を再設定した後、<code>xhost +</code>を実行(ここはXQuartzを起動するたびに必要)<br>
+        した後、<pre><code>$ qemu-system-x86_64 \
         -drive if=pflash,format=raw,file=$HOME/osbook/devenv/OVMF_CODE.fd \<br>
         -drive if=pflash,format=raw,file=$HOME/osbook/devenv/OVMF_VARS.fd \<br>
-        -hda ~/osbook/day01/bin/disk.imgを実行したら動いた。</p>
+        -hda ~/osbook/day01/bin/disk.img</code></pre>を実行したら動いた。</p>
+      <p class="is-size-3">１日目：C言語のhelloworld</p>
+       <p class="is-size-5"> helloworldのコードを少し改変して、起動しようとした。<br>
+         まずは、hello.cを開いた。コードは、<code>code ~/osbook/day01/c/hello.c</code>で開くことができた。<br>
+         そして、EfiMain()内のHello, worldを変更して、QEMUで起動しようとしたら躓いた。<br>
+         この時は、
+         <pre>
+           <code>
+             $ cd ~/osbook/day01/bin
+             $ qemu-img create -f raw disk.img 200M
+             $ mkfs.fat -n 'MIKAN OS' -s 2 -f 2 -R 32 -F 32 disk.img
+             $ mkdir -p mnt
+             $ sudo mount -o loop disk.img mnt
+             $ sudo mkdir -p mnt/EFI/BOOT
+             $ sudo cp hello.efi mnt/EFI/BOOT/BOOTX64.EFI
+             $ sudo umount mnt
+             $ cd ~/osbook/day01/c/
+             $ clang -target x86_64-pc-win32-coff -mno-red-zone -fno-stack-protector -fshort-wchar -Wall -c hello.c
+             $ lld-link /subsystem:efi_application /entry:EfiMain /out:hello.efi hello.o
+             $ ~/osbook/devenv/run_qemu.sh hello.efi
+           </code>
+           を初めから実行し直すことで動いた。
+         </pre>
     </div>
   </section>
   </body>
